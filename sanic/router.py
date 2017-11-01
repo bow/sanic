@@ -129,13 +129,18 @@ class Router:
         if strict_slashes:
             return
 
+        def route_exists(key):
+            route = self.routes_all.get(key, False)
+            return route and set(methods).issubset(route.methods)
+
         # Add versions with and without trailing /
         slash_is_missing = (
-            not uri[-1] == '/' and not self.routes_all.get(uri + '/', False)
+            not uri[-1] == '/' and not
+            route_exists(uri + '/')
         )
         without_slash_is_missing = (
             uri[-1] == '/' and not
-            self.routes_all.get(uri[:-1], False) and not
+            route_exists(uri[:-1]) and not
             uri == '/'
         )
         # add version with trailing slash
